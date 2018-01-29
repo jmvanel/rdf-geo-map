@@ -1,4 +1,3 @@
-# rdf-geo-map
 
 - geo-map-example.html example with hard coded non-RDF data
 - geo-map-example-rdf.html example with hard coded RDF data (dbpedia URL)
