@@ -25,4 +25,9 @@ An example of using the Widget in semantic\_forms :
  
 http://semantic-forms.cc:9112/assets/geo-map/geo-map.html?view=points&enrich=yes&url=http://semantic-forms.cc:9112/sparql?query=PREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APrefix%20geo%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0A%23CONSTRUCT%20%7B%20%3FS%20%3FP%20%3FO%20.%20%7D%20WHERE%20%7B%20GRAPH%20%3FG%20%7B%20%3FS%20%3FP%20%3FO%20.%20%7D%20%7D%20LIMIT%2010%0A%0ACONSTRUCT%20%7B%20%3Fsub%20geo%3Along%20%3FLON%20.%3Fsub%20geo%3Alat%20%3FLAT%20.%20%3Fsub%20rdfs%3Alabel%20%3FLAB.%7D%0AWHERE%20%7BGRAPH%20%3FGRAPH%20%7B%20%3Fsub%20geo%3Along%20%3FLON%20.%3Fsub%20geo%3Alat%20%3FLAT%20.%20%3Fsub%20rdfs%3Alabel%20%3FLAB.%20%20%7D%20%7D%0ALIMIT%201000
 
+## Other code base
+
+To be merged somehow:
+
+https://github.com/assemblee-virtuelle/Semapps/tree/master/web/front/src/semapps-map
 
