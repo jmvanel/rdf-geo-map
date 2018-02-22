@@ -38,14 +38,19 @@
 		  return /* decodeURIComponent*/(results[2].replace(/\+/g, " "));
 		}
 
- var loadVal = getParameterByName("url")
- console.log("loadVal URL " + loadVal);
- if (loadVal != null) {
-   var url = loadVal
+ var url = getParameterByName("url")
+ console.log("RDF data URL " + url)
+ if (url != null) {
+   var webContext = {
+       "lang": getParameterByName("lang"),
+       "hrefDisplayPrefix": getParameterByName("link-prefix")
+   }
+   console.log( "Web Context " ) ; console.log( webContext )
    rdfURL2SimpleArray(url).then( (data) => {
-     let map = Map.constructorWithArray(mapid, data, "@id", "lat","long","label");
-     console.log("Display all points for URL " + url);
-     map.pinShowAll();
+     let map = Map.constructorWithArray(mapid, data,
+         "@id", "lat","long","label", webContext)
+     console.log("Display all points for URL " + url + ", with web Context " + webContext )
+     map.pinShowAll()
    })
  } else
      console.log("No url= in URL ");
