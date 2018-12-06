@@ -61,51 +61,66 @@ function computeMinInPoints(initialData, key/*: String*/) {
             return result
         }
 
+   function isLeafLetBoundsValid(bounds) {
+      console.log( "isLeafLetBoundsValid " + (bounds._northEast.lat != Infinity))
+      return (
+        bounds._northEast.lat != Infinity &&
+        bounds._northEast.lng != Infinity &&
+        bounds._southWest.lat != Infinity &&
+        bounds._southWest.lng != Infinity )
+    }
+
 /*global Map*/
 class Map{
 
     /**
+     *
      * @param mapId -- id de la div
-     * ces quatre paramètres permettent, a l'affichage d'une page, d'initialiser un certain contenu
+     * ces quatre paramètres permettre, a l'affichage d'une page, d'initialiser un certain contenu
      * @param initialData: Array -- données que tu veux afficher
      * @param keyLat: String -- clé pour accéder à la valeur :latitude
      * @param keyLong: String -- clé pour accéder à la valeur :longitude
      * @param keyText: String -- clé pour accéder à la valeur :text affiché
-     * @param webContext : data from HTTP request: lang, hrefDisplayPrefix=link prefix to display URI's
      */
-    constructor(mapId,initialData,keyLat,keyLong,keyText,
-        webContext) {
+    constructor(mapId,initialData,keyLat,keyLong,keyText, keyImage) {
 
       var bounds = findGeographicZone(initialData,keyLat,keyLong)
       console.log("bounds")
       console.log(bounds)
-      this.OSM = L.map(mapId) .fitBounds( bounds )
+      if( isLeafLetBoundsValid(bounds) ) {
+        this.OSM = L.map(mapId) .fitBounds( bounds )
         // .setView([48.862725, 2.287592000000018], 10);
 
         this.pins = []
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 30,
+            maxNativeZoom: 18
         }).addTo(this.OSM )
         this.keyLat = keyLat
         this.keyLong = keyLong
         this.keyLat = keyLat
+        this.keyImage = keyImage
         for(let key in initialData){
             if (initialData.hasOwnProperty(key)) {
-                this.addPin(initialData[key][keyLat],initialData[key][keyLong],key,initialData[key][keyText])
+                this.addPin(initialData[key][keyLat],initialData[key][keyLong],
+                    key, initialData[key][keyText], initialData[key][keyImage] )
             }
         }
+        }
     }
+
     /**
-     * transforme l'array en un objet avant de créer une Map
+     *
      * @param mapId -- id de la div
+     * transforme l'array en un objet avant de créer une Map
      * @param initialData -- données que tu veux afficher (type array)
      * @param keyId -- clé pour accéder à la valeur :id
      * @param keyLat -- clé pour accéder à la valeur :latitude
      * @param keyLong -- clé pour accéder à la valeur :longitude
-     * @param keyText -- clé pour accéder à la valeur :text affiché
-     * @param webContext : data from HTTP request: lang, hrefDisplayPrefix=link prefix to display URI's
+     * @param keyText -- clé pour accéder à la valeur :texte affiché
      */
-    static constructorWithArray(mapId, initialData, keyId,keyLat,keyLong,keyText, webContext) {
+    static constructorWithArray(mapId, initialData,keyId,keyLat,keyLong,keyText, keyImage) {
 //        console.log('in constructor: initialData'); console.log(initialData);
       let objectFromArray = {}
         initialData.forEach(
@@ -113,7 +128,7 @@ class Map{
             objectFromArray[element[keyId]] = element
         })
         console.log( "constructorWithArray: objectFromArray: " ) ; console.log( objectFromArray )
-        return new Map(mapId, objectFromArray, keyLat,keyLong,keyText)
+        return new Map(mapId, objectFromArray, keyLat,keyLong,keyText, keyImage)
     }
 
     /**
@@ -131,6 +146,23 @@ class Map{
 
             }
         }
+
+        // display user location
+        var map = this.OSM
+        function onLocationFound(e) {
+          var radius = e.accuracy / 2;
+          L.marker(e.latlng).addTo(map)
+            .bindPopup("" + radius + " meters").openPopup();
+          L.circle(e.latlng, {
+            radius: radius,
+            // color: 'blue', 
+            opacity: 0.85}).addTo(map);
+        }
+        map.on('locationfound', onLocationFound);
+        // map.locate({setView: true, watch: true, maxZoom: 8});
+        map.locate({watch: true, setView: false
+          // maxZoom: 8
+        });
     }
 
     pinShow(key){
@@ -143,18 +175,36 @@ class Map{
     }
 
 
-    addPin(latitude,longitude, key, text) {
+    addPin(latitude,longitude, key, text, image) {
       "use strict"
       var pinText = text
       console.log('addPin key '); console.log( key )
-      if( key.length > 0 )
-        // usable not only embedded inside semantic_forms
-        pinText = '<a href="' + webContext.hrefDisplayPrefix +
-          encodeURIComponent(key) + '" target="_blank">' + text + '</a>'
+      if( key.length > 0 ) {
+        // TODO should be usable not embedded inside semantic_forms
+        pinText = '<a href="/display?displayuri=' + encodeURIComponent(key) + '" target="_blank">' + text + '</a>'
 
+        // For a HTTPS page,try to obtain HTTPS images
+        if ( image != undefined && window.location.protocol == "https:" )
+          image = image.toString().replace("http://", "https://")
+        if ( image != undefined ) { console.log('image') ; console.log(image) }
+
+        if( image != null && image != '')
+          pinText = pinText +
+          '<a class="image-popup-vertical-fit" href="'+image+'">' +
+            '<img src="'+image+'" css="sf-thumbnail" height="40">' +
+          '</a>'
+      } else
+        pinText = ''
       this.pins[key] = L.marker([latitude,longitude],
           {draggable:'true'} )
-          .bindPopup(pinText)
+          .bindPopup(pinText, {autoClose:false} )
+
+      var popupLocation = new L.LatLng( latitude,longitude );
+      var popup = L.popup();
+      popup.setLatLng(popupLocation);
+      popup.setContent(pinText);
+      this.OSM.addLayer(popup)
+
       this.pinShow(key)
     }
 
