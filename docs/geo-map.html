@@ -61,6 +61,15 @@
    mapElem.before(document.createTextNode(title))
    document.title = title
  }
+
+ if( loadVal . includes("/sparql?query=") ) {
+   // Suppose it's a semantic_fomrs server:
+   var sparqlUI = loadVal . replace("/sparql?query=","/sparql-ui?query=")
+   var link = document.createElement("a")
+   link.setAttribute("href", sparqlUI)
+   link.appendChild(document.createTextNode(" Edit SPARQL query"))
+   mapElem.before(link)
+ }
 </script>
 
 <script
