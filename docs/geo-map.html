@@ -58,7 +58,7 @@
  var title = getParameterByName("label")
  var mapElem =  document.getElementById("mapid")
  if(title != "") {
-   mapElem.before(document.createTextNode(title))
+   mapElem.before(document.createTextNode(decodeURIComponent(title)))
    document.title = title
  }
 
