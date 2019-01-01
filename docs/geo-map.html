@@ -43,10 +43,10 @@
 		  return /* decodeURIComponent*/(results[2].replace(/\+/g, " "));
 		}
 
- var loadVal = getParameterByName("url")
- console.log("loadVal URL " + loadVal);
- if (loadVal != null) {
-   var url = loadVal
+ var rdfDataURL = getParameterByName("url")
+ console.log("rdfDataURL " + rdfDataURL);
+ if (rdfDataURL != null) {
+   var url = rdfDataURL
    rdfURL2SimpleArray(url).then( (data) => {
      let map = Map.constructorWithArray(mapid, data, "@id", "lat","long","label", "img");
      console.log("Display all points for URL " + url);
@@ -62,9 +62,10 @@
    document.title = title
  }
 
- if( loadVal . includes("/sparql?query=") ) {
-   // Suppose it's a semantic_fomrs server:
-   var sparqlUI = loadVal . replace("/sparql?query=","/sparql-ui?query=")
+ var sparqlRegex = '/sparql.?\?query='
+ if( rdfDataURL . search(sparqlRegex) ) {
+   // Suppose service /sparql redirects to a UI; works for a semantic_forms server or Virtuoso
+   var sparqlUI = rdfDataURL
    var link = document.createElement("a")
    link.setAttribute("href", sparqlUI)
    link.appendChild(document.createTextNode(" Edit SPARQL query"))
