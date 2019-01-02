@@ -55,10 +55,10 @@
  } else
      console.log("No url= in URL ");
 
- var title = getParameterByName("label")
+ var title = decodeURIComponent( getParameterByName("label") )
  var mapElem =  document.getElementById("mapid")
  if(title != "") {
-   mapElem.before(document.createTextNode(decodeURIComponent(title)))
+   mapElem.before(document.createTextNode(title))
    document.title = title
  }
 
