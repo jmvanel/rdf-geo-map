@@ -99,8 +99,8 @@ function rdfURL2SimpleArray(/*String: */url)/*: Promise*/ {
       return {
         "@id": (subj.toString()),
         "label":getRdfsLabel(subj),
-        "long": getGeoLong(subj),
-        "lat":  getGeoLat(subj),
+        "long": Number( getGeoLong(subj) ),
+        "lat":  Number( getGeoLat(subj) ),
         "img":  getImage(subj)
         // 'http://commons.wikimedia.org/wiki/Special:FilePath/Trevoux-008.JPG?width=300'
       }
