@@ -2,8 +2,10 @@
 
 Widget HTML page for geographical maps from RDF data.
 
-The static page source is geo-map.html in doc/ directory .
+The static page source is geo-map.html in docs/ directory .
 It is a reusable web page getting its RDF data URL from the query part of the URL, namely an `url=` pseudo HTTP parameter .
+
+It is currently able to harvest predicates geo:long, geo:lat, ogc:asWKT ("Well Know Text") and rdfs:label .
 
 NOTE: I call this a pseudo HTTP parameter, because it looks like an HTTP parameter in the URL, but since it's a static page, the parameters are analyzed by a JavaScript function.
 
@@ -11,9 +13,11 @@ For using it in your application, the page geo-map.html is served by github.io a
 
 https://jmvanel.github.io/rdf-geo-map/geo-map.html
 
-If you need an HTTP URL, use instead the rawgit server:
+If you need an HTML URL, use instead the rawgit server (but rawgit will be discontinued soon):
 
 http://rawgit.com/jmvanel/rdf-geo-map/master/docs/geo-map.html
+
+When rawgit will be discontinued, you will have to host yourself the content of docs/ directory.
 
 ## Examples
 
