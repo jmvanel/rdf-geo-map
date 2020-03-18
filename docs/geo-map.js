@@ -93,6 +93,11 @@ class Map{
             maxZoom: 30,
             maxNativeZoom: 18
         }).addTo(this.OSM )
+
+        L.control.locate({
+            strings: { title: "Show me where I am" }
+        }).addTo(this.OSM)
+
         this.keyLat = keyLat
         this.keyLong = keyLong
         this.keyLat = keyLat
@@ -148,7 +153,7 @@ class Map{
      * TODO
      * - add a button to move to user location
      * - remove circle on new location received */
-    function displayUserLocation() {
+    displayUserLocation() {
         var map = this.OSM
         function onLocationFound(e) {
           var radius = e.accuracy / 2;
@@ -179,7 +184,7 @@ class Map{
     addPin(latitude,longitude, key, text, image) {
       "use strict"
       var pinText = text
-      console.log('addPin key '); console.log( key )
+      console.log('addPin key ' + key )
       if( key.length > 0 ) {
         // TODO should be usable not embedded inside semantic_forms
         pinText = '<a href="/display?displayuri=' + encodeURIComponent(key) + '" target="_blank">' + text + '</a>'
