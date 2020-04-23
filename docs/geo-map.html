@@ -96,7 +96,9 @@
    // Suppose service /sparql redirects to a UI; works for a semantic_forms server or Virtuoso
    var sparqlUI = rdfDataURL
    var link = document.createElement("a")
-   link.setAttribute("href", sparqlUI)
+   link.setAttribute("href",
+     sparqlUI +
+     "&label="+title)
    link.appendChild(document.createTextNode(" Edit SPARQL query"))
    mapElem.before(link)
  }
