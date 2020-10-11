@@ -202,11 +202,13 @@ class Map{
       } else
         pinText = ''
       this.pins[key] = L.marker([latitude,longitude],
-          {draggable:'true'} )
-          .bindPopup(pinText, {autoClose:false} )
+          {draggable:'true',
+	    "className": "sf-geo-marker"} )
+          .bindPopup(pinText,
+            {autoClose:false} )
 
       var popupLocation = new L.LatLng( latitude,longitude );
-      var popup = L.popup();
+      var popup = L.popup( {"className": "sf-geo-popup"});
       popup.setLatLng(popupLocation);
       popup.setContent(pinText);
       this.OSM.addLayer(popup)
